@@ -20,7 +20,7 @@ export default class Game extends React.Component {
 
   render () {
     return (
-      <div>
+      <div id="game-wrapper">
         <Board board={this.state.board} updateGame={this.updateGame}/>
         <div className={`${ this.state.board.lost() ? 'blackscreen' : 'hiddenBlackscreen' }`}>
           <div className={`${ this.state.board.lost() ? 'popup' : 'hiddenPopup' }`}>

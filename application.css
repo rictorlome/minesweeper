@@ -2,17 +2,29 @@
   display: flex;
 }
 
+h1, h3 {
+  text-align: center;
+}
+
 .tile {
   text-align: center;
   border-style: outset;
-  width: 15px;
-  height: 15px;
-  border: 1px solid grey;
+  width: 30px;
+  height: 30px;
+  border-bottom: 2px solid grey;
+  border-right: 2px solid grey;
+  border-left: 2px solid white;
+  border-top: 2px solid white;
   background-color: lightgrey;
+  cursor: pointer;
+  line-height: 150%;
+  font-size:20px;
+  color: blue;
 }
 
 .explored {
-  border-style: outset;
+  transition-duration: 1s;
+  border-style: inset;
 }
 
 .BOOM {
@@ -44,4 +56,12 @@
 
 .hiddenPopup {
   display: none;
+}
+
+#game-wrapper {
+  display:flex;
+  justify-content: center;
+}
+#grid-wrapper {
+  border: 1px solid black;
 }

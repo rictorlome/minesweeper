@@ -26,7 +26,7 @@ export default class Tile extends React.Component {
   getShow() {
     const {tile: {bombed, explored, flagged}} = this.props;
     if (bombed && explored) {
-      return "\u1F4A3";
+      return "💣";
     } else if (flagged) {
       return "F";
     } else if (explored) {

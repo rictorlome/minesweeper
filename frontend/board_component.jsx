@@ -16,7 +16,7 @@ const Board = function(props) {
  });
 
   return (
-    <div>
+    <div id='grid-wrapper'>
     {
       grid
     }
