@@ -19480,6 +19480,10 @@ var _board_component = __webpack_require__(27);
 
 var _board_component2 = _interopRequireDefault(_board_component);
 
+var _smiley_component = __webpack_require__(29);
+
+var _smiley_component2 = _interopRequireDefault(_smiley_component);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -19500,6 +19504,7 @@ var Game = function (_React$Component) {
 
     _this.state = { board: new Minesweeper.Board(10, 10) };
     _this.updateGame = _this.updateGame.bind(_this);
+    _this.resetGame = _this.resetGame.bind(_this);
     return _this;
   }
 
@@ -19514,12 +19519,21 @@ var Game = function (_React$Component) {
       this.setState({ board: this.state.board });
     }
   }, {
+    key: 'resetGame',
+    value: function resetGame() {
+      this.setState({ board: new Minesweeper.Board(10, 10) });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
         'div',
         { id: 'outer-game-wrapper' },
-        _react2.default.createElement('div', { id: 'upper-info' }),
+        _react2.default.createElement(
+          'div',
+          { id: 'upper-info' },
+          _react2.default.createElement(_smiley_component2.default, { restart: this.resetGame, lost: this.state.board.lost() })
+        ),
         _react2.default.createElement(
           'div',
           { id: 'inner-game-wrapper' },
@@ -19851,6 +19865,70 @@ var Tile = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Tile;
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Smiley = function (_React$Component) {
+  _inherits(Smiley, _React$Component);
+
+  function Smiley(props) {
+    _classCallCheck(this, Smiley);
+
+    return _possibleConstructorReturn(this, (Smiley.__proto__ || Object.getPrototypeOf(Smiley)).call(this, props));
+  }
+
+  _createClass(Smiley, [{
+    key: 'pickSmiley',
+    value: function pickSmiley() {
+      if (this.props.lost) {
+        return 'sad';
+      } else {
+        return 'happy';
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var whichFace = this.pickSmiley();
+      return _react2.default.createElement(
+        'div',
+        { onClick: function onClick() {
+            return _this2.props.restart();
+          }, id: 'smiley', className: 'tile' },
+        _react2.default.createElement('img', { className: whichFace, height: '60px', width: '60px', src: 'minesweeperfaces.png' })
+      );
+    }
+  }]);
+
+  return Smiley;
+}(_react2.default.Component);
+
+exports.default = Smiley;
 
 /***/ })
 /******/ ]);

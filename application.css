@@ -46,7 +46,6 @@ h1, h3 {
 }
 
 .explored {
-  transition-duration: 1s;
   border-style: inset;
 }
 
@@ -106,4 +105,32 @@ h1, h3 {
   border-left: 2px solid grey;
   border-top: 2px solid grey;
   border-style:double;
+}
+#smiley {
+  overflow:hidden;
+}
+.cool {
+  transform: translate(1px,-30px);
+}
+.sad {
+  transform: translate(-32px,-30px);
+}
+.surprise {
+  transform: translate(-32px, 0px);
+}
+.happy {
+  transform: translate(1px, 0px);
+}
+#upper-info {
+  width: 29%;
+  margin:0 auto;
+  display:flex;
+  justify-content: center;
+  padding: 10px;
+  border-bottom: 2px solid grey;
+  border-right: 2px solid grey;
+  border-left: 2px solid white;
+  border-top: 2px solid white;
+  background-color: lightgrey;
+  border-style: outset;
 }
