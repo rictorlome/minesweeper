@@ -19502,9 +19502,12 @@ var Game = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
-    _this.state = { board: new Minesweeper.Board(10, 10) };
+    _this.state = { board: new Minesweeper.Board(10, 10), clicking: false };
     _this.updateGame = _this.updateGame.bind(_this);
     _this.resetGame = _this.resetGame.bind(_this);
+    _this.setClicking = _this.setClicking.bind(_this);
+    _this.unsetClicking = _this.unsetClicking.bind(_this);
+
     return _this;
   }
 
@@ -19524,6 +19527,16 @@ var Game = function (_React$Component) {
       this.setState({ board: new Minesweeper.Board(10, 10) });
     }
   }, {
+    key: 'setClicking',
+    value: function setClicking() {
+      this.setState({ clicking: true });
+    }
+  }, {
+    key: 'unsetClicking',
+    value: function unsetClicking() {
+      this.setState({ clicking: false });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -19532,12 +19545,12 @@ var Game = function (_React$Component) {
         _react2.default.createElement(
           'div',
           { id: 'upper-info' },
-          _react2.default.createElement(_smiley_component2.default, { restart: this.resetGame, lost: this.state.board.lost() })
+          _react2.default.createElement(_smiley_component2.default, { clicking: this.state.clicking, restart: this.resetGame, won: this.state.board.won(), lost: this.state.board.lost() })
         ),
         _react2.default.createElement(
           'div',
           { id: 'inner-game-wrapper' },
-          _react2.default.createElement(_board_component2.default, { board: this.state.board, updateGame: this.updateGame })
+          _react2.default.createElement(_board_component2.default, { setC: this.setClicking, unsetC: this.unsetClicking, board: this.state.board, updateGame: this.updateGame })
         )
       );
     }
@@ -19739,7 +19752,13 @@ var Board = function Board(props) {
       'div',
       { key: i, className: 'row' },
       row.map(function (tile, j) {
-        return _react2.default.createElement(_tile_component2.default, { lost: props.board.lost(), update: update, key: (i, j), tile: tile });
+        return _react2.default.createElement(_tile_component2.default, {
+          setC: props.setC,
+          unsetC: props.unsetC,
+          lost: props.board.lost(),
+          update: update,
+          key: (i, j),
+          tile: tile });
       })
     );
   });
@@ -19787,18 +19806,28 @@ var Tile = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Tile.__proto__ || Object.getPrototypeOf(Tile)).call(this, props));
 
     _this.explore = _this.explore.bind(_this);
+    _this.anticipateClick = _this.anticipateClick.bind(_this);
     return _this;
   }
 
   _createClass(Tile, [{
-    key: "explore",
+    key: 'anticipateClick',
+    value: function anticipateClick(e) {
+      if (!this.props.lost && !e.altKey) {
+        this.props.setC();
+        e.target.classList.add('explored');
+      }
+    }
+  }, {
+    key: 'explore',
     value: function explore(e) {
       if (!this.props.lost) {
+        this.props.unsetC();
         this.props.update(this.props.tile.pos, e.altKey);
       }
     }
   }, {
-    key: "getClass",
+    key: 'getClass',
     value: function getClass() {
       var _props$tile = this.props.tile,
           bombed = _props$tile.bombed,
@@ -19818,7 +19847,7 @@ var Tile = function (_React$Component) {
       }
     }
   }, {
-    key: "getShow",
+    key: 'getShow',
     value: function getShow() {
       var _props$tile2 = this.props.tile,
           bombed = _props$tile2.bombed,
@@ -19837,7 +19866,7 @@ var Tile = function (_React$Component) {
       }
     }
   }, {
-    key: "addColorClass",
+    key: 'addColorClass',
     value: function addColorClass(show, tileClass) {
       if (show === 1) return tileClass.concat(' blue');
       if (show === 2) return tileClass.concat(' green');
@@ -19846,7 +19875,7 @@ var Tile = function (_React$Component) {
       if (show === 5) return tileClass.concat(' brown');
     }
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
       var show = this.getShow();
       var tileClass = this.getClass();
@@ -19854,8 +19883,8 @@ var Tile = function (_React$Component) {
       if (typeof show === 'number') tileClass = this.addColorClass(show, tileClass);
 
       return _react2.default.createElement(
-        "div",
-        { className: tileClass, onClick: this.explore },
+        'div',
+        { className: tileClass, onMouseDown: this.anticipateClick, onMouseUp: this.explore },
         show
       );
     }
@@ -19897,29 +19926,39 @@ var Smiley = function (_React$Component) {
   function Smiley(props) {
     _classCallCheck(this, Smiley);
 
-    return _possibleConstructorReturn(this, (Smiley.__proto__ || Object.getPrototypeOf(Smiley)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Smiley.__proto__ || Object.getPrototypeOf(Smiley)).call(this, props));
+
+    _this.handleMDown = _this.handleMDown.bind(_this);
+    _this.handleMUp = _this.handleMUp.bind(_this);
+    return _this;
   }
 
   _createClass(Smiley, [{
     key: 'pickSmiley',
     value: function pickSmiley() {
-      if (this.props.lost) {
-        return 'sad';
-      } else {
-        return 'happy';
-      }
+      if (this.props.lost) return 'sad';
+      if (this.props.won) return 'cool';
+      if (this.props.clicking) return 'surprise';
+      return 'happy';
+    }
+  }, {
+    key: 'handleMDown',
+    value: function handleMDown(e) {
+      e.currentTarget.classList.add('explored');
+    }
+  }, {
+    key: 'handleMUp',
+    value: function handleMUp(e) {
+      e.currentTarget.classList.remove('explored');
+      this.props.restart();
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
-
       var whichFace = this.pickSmiley();
       return _react2.default.createElement(
         'div',
-        { onClick: function onClick() {
-            return _this2.props.restart();
-          }, id: 'smiley', className: 'tile' },
+        { onMouseDown: this.handleMDown, onMouseUp: this.handleMUp, id: 'smiley', className: 'tile' },
         _react2.default.createElement('img', { className: whichFace, height: '60px', width: '60px', src: 'minesweeperfaces.png' })
       );
     }

@@ -132,5 +132,5 @@ h1, h3 {
   border-left: 2px solid white;
   border-top: 2px solid white;
   background-color: lightgrey;
-  border-style: outset;
+  border-style: double;
 }

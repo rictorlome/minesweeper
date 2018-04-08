@@ -4,10 +4,21 @@ export default class Tile extends React.Component {
   constructor(props) {
     super(props);
     this.explore = this.explore.bind(this);
+    this.anticipateClick = this.anticipateClick.bind(this);
   }
+
+  anticipateClick(e) {
+    if (!this.props.lost && !e.altKey) {
+      this.props.setC();
+      e.target.classList.add('explored')
+    }
+  }
+
+
 
   explore(e) {
     if (!this.props.lost) {
+      this.props.unsetC();
       this.props.update(this.props.tile.pos, e.altKey);
     }
   }
@@ -55,7 +66,7 @@ export default class Tile extends React.Component {
     if (typeof show === 'number') tileClass = this.addColorClass(show,tileClass);
 
     return (
-      <div className={ tileClass } onClick={ this.explore }>
+      <div className={ tileClass } onMouseDown={ this.anticipateClick } onMouseUp={ this.explore }>
         {show}
       </div>
     );
