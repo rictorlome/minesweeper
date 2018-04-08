@@ -20,12 +20,10 @@ export default class Game extends React.Component {
 
   render () {
     return (
-      <div id="game-wrapper">
-        <Board board={this.state.board} updateGame={this.updateGame}/>
-        <div className={`${ this.state.board.lost() ? 'blackscreen' : 'hiddenBlackscreen' }`}>
-          <div className={`${ this.state.board.lost() ? 'popup' : 'hiddenPopup' }`}>
-            You lose. Click here to play again.
-          </div>
+      <div id="outer-game-wrapper">
+        <div id="upper-info"></div>
+        <div id="inner-game-wrapper">
+          <Board board={this.state.board} updateGame={this.updateGame}/>
         </div>
       </div>
     );

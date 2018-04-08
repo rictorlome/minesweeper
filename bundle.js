@@ -19518,16 +19518,12 @@ var Game = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { id: 'game-wrapper' },
-        _react2.default.createElement(_board_component2.default, { board: this.state.board, updateGame: this.updateGame }),
+        { id: 'outer-game-wrapper' },
+        _react2.default.createElement('div', { id: 'upper-info' }),
         _react2.default.createElement(
           'div',
-          { className: '' + (this.state.board.lost() ? 'blackscreen' : 'hiddenBlackscreen') },
-          _react2.default.createElement(
-            'div',
-            { className: '' + (this.state.board.lost() ? 'popup' : 'hiddenPopup') },
-            'You lose. Click here to play again.'
-          )
+          { id: 'inner-game-wrapper' },
+          _react2.default.createElement(_board_component2.default, { board: this.state.board, updateGame: this.updateGame })
         )
       );
     }
@@ -19729,7 +19725,7 @@ var Board = function Board(props) {
       'div',
       { key: i, className: 'row' },
       row.map(function (tile, j) {
-        return _react2.default.createElement(_tile_component2.default, { update: update, key: (i, j), tile: tile });
+        return _react2.default.createElement(_tile_component2.default, { lost: props.board.lost(), update: update, key: (i, j), tile: tile });
       })
     );
   });
@@ -19783,7 +19779,9 @@ var Tile = function (_React$Component) {
   _createClass(Tile, [{
     key: "explore",
     value: function explore(e) {
-      this.props.update(this.props.tile.pos, e.altKey);
+      if (!this.props.lost) {
+        this.props.update(this.props.tile.pos, e.altKey);
+      }
     }
   }, {
     key: "getClass",
@@ -19794,6 +19792,8 @@ var Tile = function (_React$Component) {
           flagged = _props$tile.flagged;
 
       if (bombed && explored) {
+        return "tile BOOM tripped";
+      } else if (bombed && this.props.lost) {
         return "tile BOOM";
       } else if (flagged) {
         return "tile flagged";
@@ -19811,10 +19811,10 @@ var Tile = function (_React$Component) {
           explored = _props$tile2.explored,
           flagged = _props$tile2.flagged;
 
-      if (bombed && explored) {
+      if (bombed && explored || bombed && this.props.lost) {
         return "💣";
       } else if (flagged) {
-        return "F";
+        return "🚩";
       } else if (explored) {
         var d = this.props.tile.adjacentBombCount();
         return d > 0 ? d : " ";
@@ -19823,10 +19823,22 @@ var Tile = function (_React$Component) {
       }
     }
   }, {
+    key: "addColorClass",
+    value: function addColorClass(show, tileClass) {
+      if (show === 1) return tileClass.concat(' blue');
+      if (show === 2) return tileClass.concat(' green');
+      if (show === 3) return tileClass.concat(' red');
+      if (show === 4) return tileClass.concat(' purple');
+      if (show === 5) return tileClass.concat(' brown');
+    }
+  }, {
     key: "render",
     value: function render() {
-      var tileClass = this.getClass();
       var show = this.getShow();
+      var tileClass = this.getClass();
+
+      if (typeof show === 'number') tileClass = this.addColorClass(show, tileClass);
+
       return _react2.default.createElement(
         "div",
         { className: tileClass, onClick: this.explore },

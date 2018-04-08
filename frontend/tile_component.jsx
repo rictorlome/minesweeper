@@ -7,13 +7,17 @@ export default class Tile extends React.Component {
   }
 
   explore(e) {
-    this.props.update(this.props.tile.pos, e.altKey);
+    if (!this.props.lost) {
+      this.props.update(this.props.tile.pos, e.altKey);
+    }
   }
 
   getClass () {
     const {tile: {bombed, explored, flagged}} = this.props;
     if (bombed && explored) {
-      return "tile BOOM";
+      return "tile BOOM tripped";
+    } else if (bombed && this.props.lost) {
+      return "tile BOOM"
     } else if (flagged) {
       return "tile flagged";
     } else if (explored) {
@@ -25,10 +29,10 @@ export default class Tile extends React.Component {
 
   getShow() {
     const {tile: {bombed, explored, flagged}} = this.props;
-    if (bombed && explored) {
+    if (bombed && explored || bombed && this.props.lost) {
       return "💣";
     } else if (flagged) {
-      return "F";
+      return "🚩";
     } else if (explored) {
       let d = this.props.tile.adjacentBombCount();
       return d > 0 ? d : " ";
@@ -36,10 +40,20 @@ export default class Tile extends React.Component {
       return " ";
     }
   }
+  addColorClass(show,tileClass) {
+    if (show === 1) return tileClass.concat(' blue');
+    if (show === 2) return tileClass.concat(' green');
+    if (show === 3) return tileClass.concat(' red');
+    if (show === 4) return tileClass.concat(' purple');
+    if (show === 5) return tileClass.concat(' brown');
+  }
 
   render() {
-    const tileClass = this.getClass();
     const show = this.getShow();
+    let tileClass = this.getClass();
+
+    if (typeof show === 'number') tileClass = this.addColorClass(show,tileClass);
+
     return (
       <div className={ tileClass } onClick={ this.explore }>
         {show}

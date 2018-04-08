@@ -8,7 +8,7 @@ const Board = function(props) {
      <div key={i} className="row">
        {
          row.map(function (tile, j) {
-           return (<Tile update={update} key={i, j} tile={tile}/>);
+           return (<Tile lost={props.board.lost()} update={update} key={i, j} tile={tile}/>);
          })
        }
      </div>
