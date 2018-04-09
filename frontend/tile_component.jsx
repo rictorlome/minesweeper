@@ -8,7 +8,7 @@ export default class Tile extends React.Component {
   }
 
   anticipateClick(e) {
-    if (!this.props.lost && !e.altKey && !e.nativeEvent.button == 2) {
+    if (!this.props.lost && !e.altKey && e.nativeEvent.button !== 2) {
       this.props.setC();
       e.target.classList.add('explored')
     }
