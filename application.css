@@ -5,6 +5,10 @@
   font-family: "Arcade Classic";
   src: url('./ARCADECLASSIC.TTF');
 }
+@font-face {
+  font-family: "Alarm Clock";
+  src: url('./alarmclock.ttf');
+}
 
 h1 {
   font-family: "Arcade Classic", sans-serif;
@@ -41,8 +45,17 @@ h1, h3 {
 .purple {
   color: purple;
 }
-.brown {
-  color:brown;
+.maroon {
+  color: maroon;
+}
+.black {
+  color: black;
+}
+.gray {
+  color: gray;
+}
+.torquoise {
+  color: teal;
 }
 
 .explored {
@@ -96,7 +109,6 @@ h1, h3 {
   background-color: lightgrey;
   border-style: outset;
   padding:10px;
-  width:29%;
   margin:0 auto;
 }
 #grid-wrapper {
@@ -122,10 +134,9 @@ h1, h3 {
   transform: translate(1px, 0px);
 }
 #upper-info {
-  width: 29%;
   margin:0 auto;
   display:flex;
-  justify-content: center;
+  justify-content: space-around;
   padding: 10px;
   border-bottom: 2px solid grey;
   border-right: 2px solid grey;
@@ -133,4 +144,46 @@ h1, h3 {
   border-top: 2px solid white;
   background-color: lightgrey;
   border-style: double;
+}
+
+#clock-wrapper, #flag-wrapper {
+  font-family: "Alarm Clock", sans-serif;
+  color: red;
+  background: #000000;
+  font-size: 28px;
+  line-height: 34px;
+  vertical-align: middle;
+}
+#skill-select, #game-info-and-contact, #contact-buttons-outer {
+  display: flex;
+  justify-content: space-between;
+  margin:0 auto;
+}
+#game-info-and-contact {
+  margin-top: 10px;
+  flex-direction: column;
+  text-align: center;
+}
+.easy {
+  width: 340px;
+}
+.medium {
+  width: 550px;
+}
+.hard {
+  width: 750px;
+}
+.skill-choice {
+  cursor: pointer;
+  font-family: "Arcade Classic", sans-serif;
+  text-decoration: underline;
+  color: blue;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.contact-images {
+  width: 30px;
+  height: 30px;
+  margin: 8px;
 }

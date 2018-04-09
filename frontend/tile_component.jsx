@@ -8,7 +8,7 @@ export default class Tile extends React.Component {
   }
 
   anticipateClick(e) {
-    if (!this.props.lost && !e.altKey) {
+    if (!this.props.lost && !e.altKey && !e.nativeEvent.button == 2) {
       this.props.setC();
       e.target.classList.add('explored')
     }
@@ -56,7 +56,10 @@ export default class Tile extends React.Component {
     if (show === 2) return tileClass.concat(' green');
     if (show === 3) return tileClass.concat(' red');
     if (show === 4) return tileClass.concat(' purple');
-    if (show === 5) return tileClass.concat(' brown');
+    if (show === 5) return tileClass.concat(' maroon');
+    if (show === 6) return tileClass.concat(' torquoise');
+    if (show === 7) return tileClass.concat(' black');
+    if (show === 8) return tileClass.concat(' gray');
   }
 
   render() {

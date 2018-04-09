@@ -19484,6 +19484,10 @@ var _smiley_component = __webpack_require__(29);
 
 var _smiley_component2 = _interopRequireDefault(_smiley_component);
 
+var _clock_component = __webpack_require__(30);
+
+var _clock_component2 = _interopRequireDefault(_clock_component);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -19502,12 +19506,14 @@ var Game = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
-    _this.state = { board: new Minesweeper.Board(10, 10), clicking: false };
+    _this.cursize = 10;
+    _this.curbombs = 10;
+    _this.state = { board: new Minesweeper.Board(_this.cursize, _this.curbombs), curwidth: 'easy', flags: _this.curbombs, clicking: false, started: false, restarted: 0 };
     _this.updateGame = _this.updateGame.bind(_this);
     _this.resetGame = _this.resetGame.bind(_this);
     _this.setClicking = _this.setClicking.bind(_this);
     _this.unsetClicking = _this.unsetClicking.bind(_this);
-
+    _this.setDifficulty = _this.setDifficulty.bind(_this);
     return _this;
   }
 
@@ -19517,14 +19523,18 @@ var Game = function (_React$Component) {
       var i = pos[0];
       var j = pos[1];
       var tile = this.state.board.grid[i][j];
-      flagging ? tile.toggleFlag() : tile.explore();
-
+      if (flagging) {
+        tile.flagged ? this.setState({ flags: this.state.flags + 1 }) : this.setState({ flags: this.state.flags - 1 });
+        tile.toggleFlag();
+      } else {
+        tile.explore();
+      }
       this.setState({ board: this.state.board });
     }
   }, {
     key: 'resetGame',
     value: function resetGame() {
-      this.setState({ board: new Minesweeper.Board(10, 10) });
+      this.setState({ board: new Minesweeper.Board(this.cursize, this.curbombs), flags: this.curbombs, started: false, restarted: this.state.restarted + 1 });
     }
   }, {
     key: 'setClicking',
@@ -19534,23 +19544,105 @@ var Game = function (_React$Component) {
   }, {
     key: 'unsetClicking',
     value: function unsetClicking() {
-      this.setState({ clicking: false });
+      this.setState({ clicking: false, started: true });
+    }
+  }, {
+    key: 'formatFlags',
+    value: function formatFlags(flags) {
+      if (flags === 0) return '000';
+      if (flags < 10) return '00'.concat(String(flags));
+      if (flags < 100) return '0'.concat(String(flags));
+    }
+  }, {
+    key: 'setDifficulty',
+    value: function setDifficulty(e) {
+      if (e.target.id === 'easy') {
+        this.cursize = 10;
+        this.curbombs = 10;
+      } else if (e.target.id === 'medium') {
+        this.cursize = 16;
+        this.curbombs = 40;
+      } else {
+        this.cursize = 22;
+        this.curbombs = 99;
+      }
+      this.setState({ curwidth: e.target.id });
+      this.resetGame();
     }
   }, {
     key: 'render',
     value: function render() {
+      var flags = this.formatFlags(this.state.flags);
       return _react2.default.createElement(
         'div',
         { id: 'outer-game-wrapper' },
         _react2.default.createElement(
           'div',
-          { id: 'upper-info' },
-          _react2.default.createElement(_smiley_component2.default, { clicking: this.state.clicking, restart: this.resetGame, won: this.state.board.won(), lost: this.state.board.lost() })
+          { className: this.state.curwidth, id: 'skill-select' },
+          _react2.default.createElement(
+            'div',
+            { className: 'skill-choice', onClick: this.setDifficulty, id: 'easy' },
+            'Easy'
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'skill-choice', onClick: this.setDifficulty, id: 'medium' },
+            'Medium'
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'skill-choice', onClick: this.setDifficulty, id: 'hard' },
+            'Hard'
+          )
         ),
         _react2.default.createElement(
           'div',
-          { id: 'inner-game-wrapper' },
+          { className: this.state.curwidth, id: 'upper-info' },
+          _react2.default.createElement(
+            'div',
+            { id: 'flag-wrapper' },
+            flags
+          ),
+          _react2.default.createElement(_smiley_component2.default, { clicking: this.state.clicking, restart: this.resetGame, won: this.state.board.won(), lost: this.state.board.lost() }),
+          _react2.default.createElement(_clock_component2.default, { restarted: this.state.restarted, started: this.state.started, lost: this.state.board.lost() })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: this.state.curwidth, id: 'inner-game-wrapper' },
           _react2.default.createElement(_board_component2.default, { setC: this.setClicking, unsetC: this.unsetClicking, board: this.state.board, updateGame: this.updateGame })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: this.state.curwidth, id: 'game-info-and-contact' },
+          _react2.default.createElement(
+            'div',
+            { id: 'game-info' },
+            'This little game was built in React by',
+            _react2.default.createElement(
+              'a',
+              { href: 'http://thingsishow.com' },
+              '  Samuel Golland'
+            ),
+            '.'
+          ),
+          _react2.default.createElement(
+            'div',
+            { id: 'contact-buttons-outer' },
+            _react2.default.createElement(
+              'div',
+              { id: 'contact-buttons-inner' },
+              _react2.default.createElement(
+                'a',
+                { href: 'http://www.github.com/rictorlome' },
+                _react2.default.createElement('img', { className: 'contact-images', src: './github-logo.svg' })
+              ),
+              _react2.default.createElement(
+                'a',
+                { href: 'https://www.linkedin.com/in/sam-golland' },
+                _react2.default.createElement('img', { className: 'contact-images', id: 'ln', src: './ln-logo.png' })
+              )
+            )
+          )
         )
       );
     }
@@ -19813,7 +19905,7 @@ var Tile = function (_React$Component) {
   _createClass(Tile, [{
     key: 'anticipateClick',
     value: function anticipateClick(e) {
-      if (!this.props.lost && !e.altKey) {
+      if (!this.props.lost && !e.altKey && !e.nativeEvent.button == 2) {
         this.props.setC();
         e.target.classList.add('explored');
       }
@@ -19872,7 +19964,10 @@ var Tile = function (_React$Component) {
       if (show === 2) return tileClass.concat(' green');
       if (show === 3) return tileClass.concat(' red');
       if (show === 4) return tileClass.concat(' purple');
-      if (show === 5) return tileClass.concat(' brown');
+      if (show === 5) return tileClass.concat(' maroon');
+      if (show === 6) return tileClass.concat(' torquoise');
+      if (show === 7) return tileClass.concat(' black');
+      if (show === 8) return tileClass.concat(' gray');
     }
   }, {
     key: 'render',
@@ -19968,6 +20063,85 @@ var Smiley = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Smiley;
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Clock = function (_React$Component) {
+  _inherits(Clock, _React$Component);
+
+  function Clock(props) {
+    _classCallCheck(this, Clock);
+
+    var _this = _possibleConstructorReturn(this, (Clock.__proto__ || Object.getPrototypeOf(Clock)).call(this, props));
+
+    _this.state = {
+      time: 0
+    };
+    _this.increment = _this.increment.bind(_this);
+    _this.counter = window.setInterval(_this.increment, 1000);
+    return _this;
+  }
+
+  _createClass(Clock, [{
+    key: "increment",
+    value: function increment() {
+      if (this.props.started && !this.props.lost && this.state.time <= 999) {
+        this.setState({ time: this.state.time + 1 });
+      }
+    }
+  }, {
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(nextProps) {
+      if (nextProps.restarted !== this.props.restarted) {
+        this.setState({ time: 0 });
+      }
+    }
+  }, {
+    key: "formatTime",
+    value: function formatTime(time) {
+      if (time < 10) return "00".concat(String(time));
+      if (time < 100) return "0".concat(String(time));
+      return String(time);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var formattedTime = this.formatTime(this.state.time);
+      return _react2.default.createElement(
+        "div",
+        { id: "clock-wrapper" },
+        formattedTime
+      );
+    }
+  }]);
+
+  return Clock;
+}(_react2.default.Component);
+
+exports.default = Clock;
 
 /***/ })
 /******/ ]);
