@@ -2,7 +2,7 @@
 
 ![Demo Image](https://github.com/rictorlome/minesweeper/blob/master/minesweeper_screenshot.png)
 
-### [DEMO LINK](https://thingsishow.com/minesweeper)
+### [DEMO LINK](https://rictorlome.github.io/minesweeper/)
 
 ## Description
 
@@ -17,9 +17,3 @@ unsetClicking() {
   this.setState({clicking: false, started: true})
 }
 ```
-
-## TODO
-
-- [] Find better alarm clock font/ style clock + flag widgets
-- [] Fix mouse-up on different tile bug
-- [] Add flag listener for different keys besides alt
